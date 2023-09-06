@@ -12,8 +12,8 @@ class FilmeListagem {
 
     this.registrarElementos();
 
-        this.filmeService.selecionarFilmes()
-            .then((filmes) => this.gerarTabelaFilmes(filmes));
+    this.filmeService.selecionarFilmes()
+      .then((filmes) => this.gerarTabelaFilmes(filmes));
   }
 
   private registrarElementos() {
@@ -24,9 +24,9 @@ class FilmeListagem {
 
     let filmesInnerHtml: string = "";
 
-    for(let filme of filmes) {
-      const filmeHtml: string = 
-      `<div class="col-6 col-md-4 col-lg-2">
+    for (let filme of filmes) {
+      const filmeHtml: string =
+        `<div class="col-6 col-md-4 col-lg-2">
           <div class="d-grid gap-2 text-center">
             <img
               src="https://image.tmdb.org/t/p/original${filme.poster}"
@@ -37,8 +37,8 @@ class FilmeListagem {
             >
           </div>
         </div>`;
-    
-        filmesInnerHtml += filmeHtml;
+
+      filmesInnerHtml += filmeHtml;
     }
 
     this.pnlFilmes.innerHTML = filmesInnerHtml;

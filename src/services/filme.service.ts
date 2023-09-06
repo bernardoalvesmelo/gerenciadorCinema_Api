@@ -7,7 +7,7 @@ import { DetalhesFilme } from "../models/detalhes-filme";
 
 export class FilmeService {
 
-    selecionarFilmePorId(id: number): Promise<Filme> {
+    public selecionarFilmePorId(id: number): Promise<Filme> {
         const url = `https://api.themoviedb.org/3/movie/${id}?language=pt-BR`;
 
         return fetch(url, this.obterHeaderAutorizacao())
@@ -15,7 +15,7 @@ export class FilmeService {
             .then((obj: any): Filme => this.mapearFilme(obj));
     }
 
-    selecionarDetalhesFilmePorId(id: number): Promise<DetalhesFilme> {
+    public selecionarDetalhesFilmePorId(id: number): Promise<DetalhesFilme> {
         const url = `https://api.themoviedb.org/3/movie/${id}?language=pt-BR`;
 
         return fetch(url, this.obterHeaderAutorizacao())
@@ -24,7 +24,7 @@ export class FilmeService {
     }
 
     
-    selecionarCreditosFilmePorId(id: number): Promise<CreditosFilme>{
+    public selecionarCreditosFilmePorId(id: number): Promise<CreditosFilme>{
         const url = `https://api.themoviedb.org/3/movie/${id}/credits?language=pt-BR`;
 
         return fetch(url, this.obterHeaderAutorizacao())
@@ -33,7 +33,7 @@ export class FilmeService {
     }
 
 
-    selecionarFilmes(): Promise<any[]> {
+    public selecionarFilmes(): Promise<any[]> {
             const url = "https://api.themoviedb.org/3/movie/popular?language=pt-BR&page=1";
 
             return fetch(url, this.obterHeaderAutorizacao())
@@ -41,7 +41,7 @@ export class FilmeService {
                 .then((obj: any): Promise<Filme[]> => this.mapearListaFilmes(obj.results));
     }
 
-    selecionarTrailerPorId(id: number): Promise<TrailerFilme> {
+    public selecionarTrailerPorId(id: number): Promise<TrailerFilme> {
         const url = `https://api.themoviedb.org/3/movie/${id}/videos?language=pt-BR`;
 
             return fetch(url, this.obterHeaderAutorizacao())
@@ -59,7 +59,7 @@ export class FilmeService {
         };
       }
 
-    processarResposta(resposta: Response): any {
+    private processarResposta(resposta: Response): any {
         if (resposta.ok) {
             return resposta.json();
         }
@@ -67,7 +67,7 @@ export class FilmeService {
         throw new Error('Filme não encontrado');
     }
 
-    mapearFilme(obj: any): Filme {
+    private mapearFilme(obj: any): Filme {
         return {
             id: obj.id,
             titulo: obj.title,
@@ -75,7 +75,7 @@ export class FilmeService {
         }
     }
 
-    mapearDetalhesFilme(obj: any): DetalhesFilme {
+    private mapearDetalhesFilme(obj: any): DetalhesFilme {
         const apiGeneros: any[] = obj.genres;
 
         return {
@@ -90,7 +90,7 @@ export class FilmeService {
         }
     }
 
-    mapearCreditosFilme(obj: any): CreditosFilme {
+    private mapearCreditosFilme(obj: any): CreditosFilme {
         return {
             diretor: [...(obj.crew)].find(c => c.known_for_department == "Directing")?.name,
             escritores: [...(obj.crew)].filter(c => c.known_for_department == "Writing")?.map(c => c.name),
@@ -98,19 +98,14 @@ export class FilmeService {
         }
     }
 
-    mapearFilmeTrailer(obj: any): TrailerFilme {
+    private mapearFilmeTrailer(obj: any): TrailerFilme {
         const trailer = obj[obj.length - 1]?.key; 
         return {
             trailer_caminho: trailer == null ? "" : trailer
         };
     }
 
-    mapearTrailer(obj: any): string {
-        const trailer = obj[obj.length - 1]?.key; 
-        return trailer== null ? "" : trailer;
-    }
-
-    mapearListaFilmes(objetos: any[]): Promise<Filme[]> {
+    private mapearListaFilmes(objetos: any[]): Promise<Filme[]> {
         const filmes = objetos.map(obj => this.selecionarFilmePorId(obj.id));
         return Promise.all(filmes);
     }

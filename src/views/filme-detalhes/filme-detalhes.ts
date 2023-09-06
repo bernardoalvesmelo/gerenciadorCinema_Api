@@ -21,15 +21,19 @@ export class FilmeDetalhes {
     const url = new URLSearchParams(window.location.search);
     const id: number = parseInt(url.get('id') as string);
 
+    this.gerarConteudo(id);
+  }
+
+  private gerarConteudo(id: number): void {
     this.filmeService.selecionarDetalhesFilmePorId(id)
-      .then((obj: DetalhesFilme) => this.gerarConteudo(obj));
+      .then((obj: DetalhesFilme) => this.gerarDetalhesFilme(obj));
 
     this.filmeService.selecionarCreditosFilmePorId(id)
       .then((obj: CreditosFilme) => this.gerarCreditos(obj));
 
     this.filmeService.selecionarTrailerPorId(id)
       .then((obj: TrailerFilme) => this.gerarTrailer(obj));
-  } 
+  }
 
   private registrarElementos() {
     this.pnlCabecalho = document.getElementById('pnlCabecalho') as HTMLDivElement;
@@ -40,7 +44,7 @@ export class FilmeDetalhes {
     this.lblDescricao = document.getElementById('lblDescricao') as HTMLParagraphElement;
   }
 
-  private gerarConteudo(filme: DetalhesFilme) {
+  private gerarDetalhesFilme(filme: DetalhesFilme) {
     this.gerarCabecalho(filme);
     this.gerarPoster(filme);
     this.gerarGenero(filme);
@@ -94,28 +98,28 @@ export class FilmeDetalhes {
         <p class="col my-auto py-2 fw-bold align-text-center text-light ml-auto">Diretor</p>
         <p class="col my-auto py-2 align-text-center text-light ml-auto">${creditos.diretor}</p>
       </div>`;
-    
-    let  escritoresTexto = "" + creditos.escritores[0];
+
+    let escritoresTexto = "" + creditos.escritores[0];
     for (let i = 1; i < creditos.escritores.length; i++) {
       escritoresTexto += " ° " + creditos.escritores[i];
     }
 
-    let escritoresHmtl: string = 
-    `<div class="row border-bottom border-light">
-      <p class="col my-auto py-2 fw-bold align-text-center text-light ml-auto">Escritores</p>
-      <p class="col my-auto py-2 align-text-center text-light ml-auto">${escritoresTexto}</p>
-    </div>`;
+    let escritoresHmtl: string =
+      `<div class="row border-bottom border-light">
+        <p class="col my-auto py-2 fw-bold align-text-center text-light ml-auto">Escritores</p>
+        <p class="col my-auto py-2 align-text-center text-light ml-auto">${escritoresTexto}</p>
+      </div>`;
 
-    let  atoresTexto = "" + creditos.atores[0];
+    let atoresTexto = "" + creditos.atores[0];
     for (let i = 1; i < creditos.atores.length; i++) {
       atoresTexto += " ° " + creditos.atores[i];
     }
 
-    let atoresHmtl: string = 
-    `<div class="row">
-      <p class="col my-auto py-2 fw-bold align-text-center text-light ml-auto">Atores</p>
-      <p class="col my-auto py-2 align-text-center text-light ml-auto">${atoresTexto}</p>
-    </div>`;
+    let atoresHmtl: string =
+      `<div class="row">
+        <p class="col my-auto py-2 fw-bold align-text-center text-light ml-auto">Atores</p>
+        <p class="col my-auto py-2 align-text-center text-light ml-auto">${atoresTexto}</p>
+      </div>`;
 
     const creditosInnerHtml: string = autorInnerHtml;
 
