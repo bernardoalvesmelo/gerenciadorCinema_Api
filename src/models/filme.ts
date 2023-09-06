@@ -3,6 +3,7 @@ export type Filme  = {
     titulo: string,
     poster: string,
     votos: number,
+    nota: number,
     data: string,
     trailer: string,
     descricao: string,

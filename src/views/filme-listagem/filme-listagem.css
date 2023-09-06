@@ -1,2 +1,12 @@
 /* Css do Bootstrap */
 @import url("bootstrap/dist/css/bootstrap.min.css");
+
+body {
+    background: rgb(46, 41, 23);
+    background: linear-gradient(
+        73deg,
+      rgb(11, 7, 27) 0%,
+      rgb(15, 12, 1) 50%,
+      rgb(11, 7, 27) 100%
+    );
+}
