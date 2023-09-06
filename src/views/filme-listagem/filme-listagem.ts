@@ -25,7 +25,7 @@ class FilmeListagem {
 
     let filmesInnerHtml: string = "";
 
-    for( let filme of filmes) {
+    for(let filme of filmes) {
       const filmeHtml: string = 
       `<div class="col-6 col-md-4 col-lg-2">
           <div class="d-grid gap-2 text-center">
@@ -44,9 +44,6 @@ class FilmeListagem {
 
     this.pnlFilmes.innerHTML = filmesInnerHtml;
   }
-
-
-
 }
 
 window.addEventListener("load", () => new FilmeListagem());
