@@ -1,8 +1,7 @@
 import "bootstrap";
-
 import "./filme-listagem.css";
 import { FilmeService } from "../../services/filme.service";
-import { Filme } from "../../models/filme";
+import { Filme } from "../../models/listagem-filme";
 
 class FilmeListagem {
   pnlFilmes: HTMLDivElement;

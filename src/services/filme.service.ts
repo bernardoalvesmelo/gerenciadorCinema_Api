@@ -1,39 +1,26 @@
-import { Filme } from "../models/filme";
+import { Filme } from "../models/listagem-filme";
 import { API_KEY } from "../../secrets";
-import { CreditosFilme } from "../models/creditos";
+import { CreditosFilme } from "../models/creditos-filme";
+import { TrailerFilme } from "../models/trailer-filme";
+import { DetalhesFilme } from "../models/detalhes-filme";
 
-export type Genero =   {
-    id: number,
-    nome: string
-    };
 
 export class FilmeService {
-
-    generos: Genero[] = [];
-
-    constructor() {
-        this.selecionarGeneros()
-        .then((obj: Genero[]): Genero[] => this.carregarGeneros(obj));
-
-        this.selecionarCreditosFilmePorId(232)
-        .then((obj) => console.log(obj));
-    }
-
-    carregarGeneros(generos: Genero[]): Genero[] {
-        this.generos = generos;
-        return generos;
-    }
 
     selecionarFilmePorId(id: number): Promise<Filme> {
         const url = `https://api.themoviedb.org/3/movie/${id}?language=pt-BR`;
 
-        let filme: Filme;
+        return fetch(url, this.obterHeaderAutorizacao())
+            .then((res: Response): Promise<any> => this.processarResposta(res))
+            .then((obj: any): Filme => this.mapearFilme(obj));
+    }
+
+    selecionarDetalhesFilmePorId(id: number): Promise<DetalhesFilme> {
+        const url = `https://api.themoviedb.org/3/movie/${id}?language=pt-BR`;
 
         return fetch(url, this.obterHeaderAutorizacao())
             .then((res: Response): Promise<any> => this.processarResposta(res))
-            .then((obj: any): Filme => filme = this.mapearFilme(obj))
-            .then(() => this.selecionarTrailer(filme))
-            .then(() => filme);
+            .then((obj: any): DetalhesFilme => this.mapearDetalhesFilme(obj));
     }
 
     
@@ -54,22 +41,12 @@ export class FilmeService {
                 .then((obj: any): Promise<Filme[]> => this.mapearListaFilmes(obj.results));
     }
 
-    selecionarGeneros(): Promise<Genero[]> {
-        const url = "https://api.themoviedb.org/3/genre/movie/list?language=pt-BR";
-
-        return fetch(url, this.obterHeaderAutorizacao())
-            .then((res: Response): Promise<any> => this.processarResposta(res))
-            .then((obj: any): Genero[] => this.mapearGeneros(obj));
-}
-
-    selecionarTrailer(filme: Filme): Promise<Filme> {
-        const url = `https://api.themoviedb.org/3/movie/${filme.id}/videos?language=pt-BR`;
+    selecionarTrailerPorId(id: number): Promise<TrailerFilme> {
+        const url = `https://api.themoviedb.org/3/movie/${id}/videos?language=pt-BR`;
 
             return fetch(url, this.obterHeaderAutorizacao())
                 .then((res: Response): Promise<any> => this.processarResposta(res))
-                .then((obj: any): string => this.mapearTrailer(obj.results))
-                .then((obj: string): string => filme.trailer = obj)
-                .then((): Filme => filme);
+                .then((obj: any): TrailerFilme => this.mapearFilmeTrailer(obj.results));
     }
 
     private obterHeaderAutorizacao() {
@@ -91,6 +68,14 @@ export class FilmeService {
     }
 
     mapearFilme(obj: any): Filme {
+        return {
+            id: obj.id,
+            titulo: obj.title,
+            poster: obj.poster_path
+        }
+    }
+
+    mapearDetalhesFilme(obj: any): DetalhesFilme {
         const apiGeneros: any[] = obj.genres;
 
         return {
@@ -100,14 +85,12 @@ export class FilmeService {
             votos: obj.vote_count,
             nota: obj.vote_average,
             data: obj.release_date,
-            trailer:  "",
             descricao: obj.overview,
             generos: apiGeneros.map(g => g.name)
         }
     }
 
     mapearCreditosFilme(obj: any): CreditosFilme {
-console.log(obj);
         return {
             diretor: [...(obj.crew)].find(c => c.known_for_department == "Directing")?.name,
             escritores: [...(obj.crew)].filter(c => c.known_for_department == "Writing")?.map(c => c.name),
@@ -115,34 +98,20 @@ console.log(obj);
         }
     }
 
+    mapearFilmeTrailer(obj: any): TrailerFilme {
+        const trailer = obj[obj.length - 1]?.key; 
+        return {
+            trailer_caminho: trailer == null ? "" : trailer
+        };
+    }
 
     mapearTrailer(obj: any): string {
         const trailer = obj[obj.length - 1]?.key; 
         return trailer== null ? "" : trailer;
     }
 
-    mapearGeneros(obj: any): Genero[] {
-        const generos: Genero[] = [];
-        const apiGeneros: any[] = obj.genres;
-        apiGeneros.forEach(g => generos.push({id: g.id, nome: g.nome}));
-        return generos;
-    }
-
     mapearListaFilmes(objetos: any[]): Promise<Filme[]> {
-        const filmes = objetos.map(obj => {
-            let filme: Filme;
-
-            return this.selecionarFilmePorId(obj.id)
-            .then((obj: Filme) => filme = obj)
-            .then((filme) => this.selecionarTrailer(filme))
-            .then(() => filme);
-        });
-
+        const filmes = objetos.map(obj => this.selecionarFilmePorId(obj.id));
         return Promise.all(filmes);
     }
-
-    obterGenero(id: number): string {
-        return this.generos?.find(g => g.id == id)?.nome ?? "";
-    }
-
 }
