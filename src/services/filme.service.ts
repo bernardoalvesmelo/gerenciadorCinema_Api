@@ -97,7 +97,7 @@ export class FilmeService {
 
     private mapearCreditosFilme(obj: any): CreditosFilme {
         return {
-            diretor: [...(obj.crew)].find(c => c.known_for_department == "Directing")?.name,
+            diretores: [...(obj.crew)].filter(c => c.known_for_department == "Directing")?.map(c => c.name),
             escritores: [...(obj.crew)].filter(c => c.known_for_department == "Writing")?.map(c => c.name),
             atores: [...(obj.crew)].filter(c => c.known_for_department == "Acting")?.map(c => c.name)
         }

@@ -1,5 +1,5 @@
 export type CreditosFilme = {
-    diretor: string,
+    diretores: string[],
     escritores: string[],
     atores: string[]
 }

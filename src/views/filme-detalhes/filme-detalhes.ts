@@ -131,10 +131,15 @@ export class FilmeDetalhes {
   }
 
   private gerarCreditos(creditos: CreditosFilme) {
-    let autorInnerHtml: string =
+    let diretoresTexto = "" + creditos.diretores[0];
+    for (let i = 1; i < creditos.diretores.length; i++) {
+      diretoresTexto += " ° " + creditos.diretores[i];
+    }
+
+    let diretoresHtml: string =
       `<div class="row border-bottom border-light">
-        <p class="col my-auto py-2 fw-bold align-text-center text-light ml-auto">Diretor</p>
-        <p class="col my-auto py-2 align-text-center text-light ml-auto">${creditos.diretor}</p>
+        <p class="col my-auto py-2 fw-bold align-text-center text-light ml-auto">Diretores</p>
+        <p class="col my-auto py-2 align-text-center text-light ml-auto">${diretoresTexto}</p>
       </div>`;
 
     let escritoresTexto = "" + creditos.escritores[0];
@@ -159,9 +164,7 @@ export class FilmeDetalhes {
         <p class="col my-auto py-2 align-text-center text-light ml-auto">${atoresTexto}</p>
       </div>`;
 
-    const creditosInnerHtml: string = autorInnerHtml;
-
-    this.pnlCreditos.innerHTML = creditosInnerHtml + escritoresHmtl + atoresHmtl;
+    this.pnlCreditos.innerHTML = diretoresHtml + escritoresHmtl + atoresHmtl;
   }
 
   private gerarGenero(filme: DetalhesFilme) {
