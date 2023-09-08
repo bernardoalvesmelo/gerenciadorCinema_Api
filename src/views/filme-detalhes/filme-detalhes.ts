@@ -131,7 +131,7 @@ export class FilmeDetalhes {
   }
 
   private gerarCreditos(creditos: CreditosFilme) {
-    let diretoresTexto = "" + creditos.diretores[0];
+    let diretoresTexto = "" + creditos.diretores[0] ?? "";
     for (let i = 1; i < creditos.diretores.length; i++) {
       diretoresTexto += " ° " + creditos.diretores[i];
     }
@@ -142,7 +142,7 @@ export class FilmeDetalhes {
         <p class="col my-auto py-2 align-text-center text-light ml-auto">${diretoresTexto}</p>
       </div>`;
 
-    let escritoresTexto = "" + creditos.escritores[0];
+    let escritoresTexto = "" + creditos.escritores[0] ?? "";
     for (let i = 1; i < creditos.escritores.length; i++) {
       escritoresTexto += " ° " + creditos.escritores[i];
     }
@@ -153,7 +153,7 @@ export class FilmeDetalhes {
         <p class="col my-auto py-2 align-text-center text-light ml-auto">${escritoresTexto}</p>
       </div>`;
 
-    let atoresTexto = "" + creditos.atores[0];
+    let atoresTexto = "" + creditos.atores[0] ?? "";
     for (let i = 1; i < creditos.atores.length; i++) {
       atoresTexto += " ° " + creditos.atores[i];
     }

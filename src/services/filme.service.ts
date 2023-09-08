@@ -96,11 +96,19 @@ export class FilmeService {
     }
 
     private mapearCreditosFilme(obj: any): CreditosFilme {
-        return {
+        let creditos = {
             diretores: [...(obj.crew)].filter(c => c.known_for_department == "Directing")?.map(c => c.name),
             escritores: [...(obj.crew)].filter(c => c.known_for_department == "Writing")?.map(c => c.name),
             atores: [...(obj.crew)].filter(c => c.known_for_department == "Acting")?.map(c => c.name)
         }
+
+        let valores = Object.values(creditos);
+
+        creditos.diretores = valores[0].filter((v, indice) => valores[0].indexOf(v) == indice);
+        creditos.escritores = valores[1].filter((v, indice) => valores[1].indexOf(v) == indice);
+        creditos.atores = valores[2].filter((v, indice) => valores[2].indexOf(v) == indice);
+        
+        return creditos;
     }
 
     private mapearFilmeTrailer(obj: any): TrailerFilme {
