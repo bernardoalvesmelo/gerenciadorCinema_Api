@@ -41,6 +41,11 @@ export class FilmeService {
                 .then((obj: any): Promise<Filme[]> => this.mapearListaFilmes(obj.results));
     }
 
+    public selecionarFilmesPorIds(ids: number[]): Promise<Filme[]> {
+        const filmes = ids.map(id => this.selecionarFilmePorId(id));
+        return Promise.all(filmes);
+    }
+
     public selecionarTrailerPorId(id: number): Promise<TrailerFilme> {
         const url = `https://api.themoviedb.org/3/movie/${id}/videos?language=pt-BR`;
 

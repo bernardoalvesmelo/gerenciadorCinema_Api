@@ -1,7 +1,9 @@
 import { CreditosFilme } from "../../models/creditos-filme";
 import { DetalhesFilme } from "../../models/detalhes-filme";
+import { HistoricoUsuario } from "../../models/historico-usuario";
 import { TrailerFilme } from "../../models/trailer-filme";
 import { FilmeService } from "../../services/filme.service";
+import { LocalStorageService } from "../../services/local-storage.service";
 import "./filme-detalhes.css";
 
 export class FilmeDetalhes {
@@ -12,16 +14,23 @@ export class FilmeDetalhes {
   pnlCreditos: HTMLDivElement;
   lblDescricao: HTMLParagraphElement;
   filmeService = new FilmeService();
+  localStorageService: LocalStorageService;
+  favoritos: HistoricoUsuario;
+  filme_id: number;
 
   constructor() {
     this.filmeService = new FilmeService();
+    this.localStorageService = new LocalStorageService();
+
+    this.favoritos = this.localStorageService.carregarDados();
 
     this.registrarElementos();
 
     const url = new URLSearchParams(window.location.search);
     const id: number = parseInt(url.get('id') as string);
+    this.filme_id = id;
 
-    this.gerarConteudo(id);
+    this.gerarConteudo(this.filme_id);
   }
 
   private gerarConteudo(id: number): void {
@@ -50,6 +59,7 @@ export class FilmeDetalhes {
     this.gerarGenero(filme);
 
     this.lblDescricao.textContent = filme.descricao;
+    this.atualizarIconFavorito();
   }
 
   private gerarCabecalho(filme: DetalhesFilme) {
@@ -61,11 +71,39 @@ export class FilmeDetalhes {
         <div class="ms-auto text-end">
           <p class="text-light">${Math.round(filme.nota * 100) / 100} / 10</p>
           <p class="text-light">${filme.votos} Votos</p>
-          <i class="bi bi-heart fs-2 text-warning"></i>
+          <i id="lblFavorito" class="bi bi-heart fs-2 text-warning" role="button"></i>
         </div>
       </div>`;
 
     this.pnlCabecalho.innerHTML = cabecalhoInnerHtml;
+
+    document.getElementById('lblFavorito')
+      ?.addEventListener('click', () => {this.atualizarFavoritos()})
+  }
+
+  private atualizarFavoritos(): void {
+    if(this.favoritos.filmes_ids.includes(this.filme_id)) {
+      this.favoritos.filmes_ids = this.favoritos.filmes_ids
+        .filter(f => f != this.filme_id);
+    }
+
+    else {
+      this.favoritos.filmes_ids.push(this.filme_id);
+    }
+
+    this.localStorageService.salvarDados(this.favoritos);
+    this.atualizarIconFavorito();
+  }
+
+  private atualizarIconFavorito(): void {
+    const lblFavorito = document.getElementById('lblFavorito') as HTMLElement; 
+    if(this.favoritos.filmes_ids.includes(this.filme_id)) {
+      lblFavorito.className = "bi bi-heart fs-2 text-danger";
+    }
+
+    else {
+      lblFavorito.className = "bi bi-heart fs-2 text-light";
+    }
   }
 
   private gerarTrailer(trailer: TrailerFilme) {

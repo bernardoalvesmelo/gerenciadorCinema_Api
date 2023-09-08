@@ -2,22 +2,40 @@ import "bootstrap";
 import "./filme-listagem.css";
 import { FilmeService } from "../../services/filme.service";
 import { Filme } from "../../models/listagem-filme";
+import { LocalStorageService } from "../../services/local-storage.service";
+import { HistoricoUsuario } from "../../models/historico-usuario";
 
 class FilmeListagem {
   pnlFilmes: HTMLDivElement;
+  lblEmAlta: HTMLHeadingElement;
+  lblFavoritos: HTMLHeadingElement;
   filmeService = new FilmeService();
+  localStorageService: LocalStorageService;
+  favoritos: HistoricoUsuario;
 
   constructor() {
     this.filmeService = new FilmeService();
+    
+    this.localStorageService = new LocalStorageService();
+    this.favoritos = this.localStorageService.carregarDados();
 
     this.registrarElementos();
+    this.registrarEventos();
 
-    this.filmeService.selecionarFilmes()
-      .then((filmes) => this.gerarTabelaFilmes(filmes));
+    this.selecionarFilmesEmAlta();
   }
 
   private registrarElementos() {
     this.pnlFilmes = document.getElementById('pnlFilmes') as HTMLDivElement;
+    this.lblEmAlta = document.getElementById('lblEmAlta') as HTMLHeadingElement;
+    this.lblFavoritos = document.getElementById('lblFavoritos') as HTMLHeadingElement;
+  }
+
+  private registrarEventos() {
+    const ids = this.favoritos.filmes_ids;
+    console.log(this.favoritos);
+    this.lblEmAlta.addEventListener('click', () => this.selecionarFilmesEmAlta());
+    this.lblFavoritos.addEventListener('click', () => {this.selecionarFilmesFavoritos(ids)});
   }
 
   private gerarTabelaFilmes(filmes: Filme[]) {
@@ -43,6 +61,17 @@ class FilmeListagem {
 
     this.pnlFilmes.innerHTML = filmesInnerHtml;
   }
+
+  private selecionarFilmesEmAlta() {
+    this.filmeService.selecionarFilmes()
+      .then((filmes) => this.gerarTabelaFilmes(filmes));
+  }
+
+  private selecionarFilmesFavoritos(ids: number[]) {
+    this.filmeService.selecionarFilmesPorIds(ids)
+      .then((filmes) => this.gerarTabelaFilmes(filmes));
+  }
+
 }
 
 window.addEventListener("load", () => new FilmeListagem());
