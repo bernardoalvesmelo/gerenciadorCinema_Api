@@ -98,7 +98,7 @@ export class FilmeDetalhes {
   private atualizarIconFavorito(): void {
     const lblFavorito = document.getElementById('lblFavorito') as HTMLElement; 
     if(this.favoritos.filmes_ids.includes(this.filme_id)) {
-      lblFavorito.className = "bi bi-heart fs-2 text-danger";
+      lblFavorito.className = "bi bi-heart-fill fs-2 text-warning";
     }
 
     else {

@@ -65,11 +65,19 @@ class FilmeListagem {
   private selecionarFilmesEmAlta() {
     this.filmeService.selecionarFilmes()
       .then((filmes) => this.gerarTabelaFilmes(filmes));
+
+    this.lblEmAlta.classList.remove('lbl-selecionado');
+    this.lblFavoritos.classList.remove('lbl-selecionado');
+    this.lblEmAlta.classList.add('lbl-selecionado');
   }
 
   private selecionarFilmesFavoritos(ids: number[]) {
     this.filmeService.selecionarFilmesPorIds(ids)
       .then((filmes) => this.gerarTabelaFilmes(filmes));
+
+      this.lblEmAlta.classList.remove('lbl-selecionado');
+      this.lblFavoritos.classList.remove('lbl-selecionado');
+      this.lblFavoritos.classList.add('lbl-selecionado');
   }
 
 }

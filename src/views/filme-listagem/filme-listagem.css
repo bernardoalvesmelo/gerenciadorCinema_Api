@@ -10,3 +10,11 @@ body {
       rgb(11, 7, 27) 100%
     );
 }
+
+.lbl-selecionado {
+    text-decoration: underline;
+}
+
+#lblEmAlta:hover, #lblFavoritos:hover {
+    color: #ee9a1d !important;
+}
